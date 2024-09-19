@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>備忘錄應用</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>快速新增備忘錄</h1>
+    <input type="text" id="noteInput" placeholder="請輸入你的重要事項" />
+    <button onclick="addNote()">新增備忘錄</button>
+    <h2>你的備忘錄:</h2>
+    <ul id="notesList"></ul>
+    <script>
+        // 獲取備忘錄
+        function getNotes() {
+            const notes = JSON.parse(localStorage.getItem('notes')) || [];
+            return notes;
+        }
+
+        // 顯示備忘錄
+        function displayNotes() {
+            const notes = getNotes();
+            const notesList = document.getElementById('notesList');
+            notesList.innerHTML = ''; // 清空列表
+            notes.forEach((note, index) => {
+                const li = document.createElement('li');
+                li.textContent = note;
+                const deleteButton = document.createElement('button');
+                deleteButton.textContent = '刪除';
+                deleteButton.onclick = () => deleteNote(index);
+                li.appendChild(deleteButton);
+                notesList.appendChild(li);
+            });
+        }
+
+        // 新增備忘錄
+        function addNote() {
+            const noteInput = document.getElementById('noteInput');
+            const note = noteInput.value.trim();
+            if (note) {
+                const notes = getNotes();
+                notes.push(note);
+                localStorage.setItem('notes', JSON.stringify(notes));
+                noteInput.value = ''; // 清空輸入框
+                displayNotes(); // 更新顯示
+                alert('備忘錄已新增！');
+            } else {
+                alert('請輸入有效的備忘錄！');
+            }
+        }
+
+        // 刪除備忘錄
+        function deleteNote(index) {
+            const notes = getNotes();
+            notes.splice(index, 1);
+            localStorage.setItem('notes', JSON.stringify(notes));
+            displayNotes(); // 更新顯示
+            alert('備忘錄已刪除！');
+        }
+
+        // 初始化顯示
+        displayNotes();
+    </script>
+</body>
+</html>
